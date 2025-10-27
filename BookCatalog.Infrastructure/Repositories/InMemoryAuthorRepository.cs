@@ -9,12 +9,7 @@ namespace BookCatalog.Infrastructure.Repositories
     {
         public Task<List<Author>> GetAllAuthors()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Author?> GetAuthorById()
-        {
-            throw new NotImplementedException();
+            return Task.FromResult(Data.Authors);
         }
     }
 }
