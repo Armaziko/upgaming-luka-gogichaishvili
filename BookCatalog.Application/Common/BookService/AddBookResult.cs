@@ -14,5 +14,12 @@ namespace BookCatalog.Application.Common.BookService
             Book = book,
             StatusCode = HttpStatusCode.Created
         };
+
+        public static AddBookResult InvalidDTO(List<string> errors) => new AddBookResult()
+        {
+            IsSuccess = false,
+            Error = "Your request is invalid. " + string.Join("/n", errors),
+            StatusCode = HttpStatusCode.BadRequest
+        };
     }
 }

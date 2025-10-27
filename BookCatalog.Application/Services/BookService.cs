@@ -10,13 +10,20 @@ namespace BookCatalog.Application.Services
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
-        public BookService(IBookRepository bookRepository, IAuthorRepository authorRepository)
+        private readonly IValidator _validator;
+        public BookService(IBookRepository bookRepository, IAuthorRepository authorRepository, IValidator validator)
         {
             _bookRepository = bookRepository ?? throw new ArgumentNullException(nameof(bookRepository));
             _authorRepository = authorRepository ?? throw new ArgumentNullException(nameof(authorRepository));
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
+
         public async Task<AddBookResult> AddBookDto(CreateBookDto createBookDto)
         {
+
+            var CheckIfValidDTO = _validator.ValidateRequest(createBookDto);
+            if(!CheckIfValidDTO.Result.IsValid)
+                return AddBookResult.
 
             var attemptGetBooks = await _bookRepository.GetAllBooks(); //They are needed to check if an id exists before adding a new book
             //Generating a new integer ID that doesn't already exist.
