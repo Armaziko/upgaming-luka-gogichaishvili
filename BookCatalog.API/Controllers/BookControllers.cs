@@ -21,16 +21,6 @@ namespace BookCatalog.API.Endpoints
                     statusCode: (int)attemptGetAllBooks.StatusCode);
             });
 
-            app.MapGet("/api/authors/{id}/books", async (IBookService bookService, int id) =>
-            {
-                var attemptGetBooksByAuthor = await bookService.GetBooksByAuthor(id);
-
-                return Results.Json(
-                    attemptGetBooksByAuthor.IsSuccess ? attemptGetBooksByAuthor.Books : attemptGetBooksByAuthor.Error,
-                    statusCode: (int)attemptGetBooksByAuthor.StatusCode
-                    );
-            });
-
             app.MapPost("/api/books", async (CreateBookDto createBookDto, IBookService bookService) =>
             {
                 var attemptAddBook = await bookService.AddBookDto(createBookDto);
@@ -47,17 +37,6 @@ namespace BookCatalog.API.Endpoints
                 return Results.Json(
                     attemptAddBook.IsSuccess ? attemptAddBook.Book : attemptAddBook.Error,
                     statusCode: (int) attemptAddBook.StatusCode
-                    );
-            });
-
-            //BONUS TASK (parameter - id) (returns name of the author with nested list of his books)
-            app.MapGet("/api/authors/{id}", async (int id, IBookService bookService) =>
-            {
-                var attemptGetAuthorDetails = await bookService.GetAuthorDetails(id);
-
-                return Results.Json(
-                    attemptGetAuthorDetails.IsSuccess ? attemptGetAuthorDetails.AuthorDetails : attemptGetAuthorDetails.Error,
-                    statusCode: (int)attemptGetAuthorDetails.StatusCode
                     );
             });
 
