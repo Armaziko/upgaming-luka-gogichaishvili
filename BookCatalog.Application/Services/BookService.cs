@@ -25,15 +25,14 @@ namespace BookCatalog.Application.Services
             if (!CheckIfValidDTO.Result.IsValid)
                 return AddBookResult.InvalidDTO(CheckIfValidDTO.Result.Errors);
 
-            var attemptGetBooks = await _bookRepository.GetAllBooks(); //They are needed to check if an id exists before adding a new book
-            //Generating a new integer ID that doesn't already exist.
+            var attemptGetBooks = await _bookRepository.GetAllBooks();
+           
             int newId = 1; 
             if(attemptGetBooks.Count != 0)
             {
-                newId = attemptGetBooks.Max(b => b.ID) + 1;
+                newId = attemptGetBooks.Max(b => b.ID) + 1;//Adding 1 to the max value in books list makes sure there are no repeating IDs
             }
 
-            //Creating a new book instance
             Book newBook = new Book()
             {
                 ID = newId,
@@ -49,7 +48,7 @@ namespace BookCatalog.Application.Services
 
         public async Task<BookServiceResult> GetAllBooksAsync() 
         {
-            //To get list of book dtos, the simplest way is to just fetch entire lists as they are small.
+            //To get list of book dtos, the simplest way is to just fetch entire lists as they are small and just iterate over lists.
             List<BookDto> booksToReturn = new();
 
             List<Book> books = await _bookRepository.GetAllBooks();
@@ -60,7 +59,7 @@ namespace BookCatalog.Application.Services
                 var authorName = authors.FirstOrDefault(a => a.ID == book.AuthorID)?.Name;
                 if (string.IsNullOrWhiteSpace(authorName))
                 {
-                    continue; //Just skips over the nameless author to return other book DTOs.
+                    continue; //Just skips over the nameless author instead of throwing or breaking in order to return other book DTOs.
                 }
                 else
                 {
@@ -97,7 +96,7 @@ namespace BookCatalog.Application.Services
                 {
                     var authorName = authors.FirstOrDefault(a => a.ID == authorId)?.Name;
                     if (string.IsNullOrWhiteSpace(authorName))
-                        continue; //Skip over the nameless author
+                        continue;
                     else
                     {
                         BookDto newBookDto = new BookDto()
