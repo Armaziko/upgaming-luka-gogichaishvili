@@ -14,7 +14,7 @@ namespace BookCatalog.Application.Validators
         }
         public bool IsValidTitle(string title)
         {
-            return !string.IsNullOrEmpty(title));
+            return !string.IsNullOrEmpty(title);
         }
         public bool IsValidPublicationYear(int year)
         {
@@ -51,7 +51,7 @@ namespace BookCatalog.Application.Validators
                 errors.Add($"Author ID is invalid. Author with the given ID doesn't exist.  \n");
             }
 
-            if (isValid)
+            if (!isValid)
                 return Task.FromResult(ValidatorResult.IsInvalidRequest(errors));
 
             return Task.FromResult(ValidatorResult.IsValidRequest());

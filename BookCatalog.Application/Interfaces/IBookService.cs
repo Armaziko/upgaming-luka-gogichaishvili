@@ -15,5 +15,8 @@ namespace BookCatalog.Application.Interfaces
         public Task<BookServiceResult> GetBooksByAuthor(int AuthorId);
 
         public Task<AddBookResult> AddBookDto(CreateBookDto book);
+
+        public Task<GetAuthorDetailsResult> GetAuthorDetails(int AuthorId);
+
     }
 }

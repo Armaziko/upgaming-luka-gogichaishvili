@@ -26,6 +26,5 @@ namespace BookCatalog.Application.Common.BookService
             Error = "Could not find any books.",
             StatusCode = HttpStatusCode.NotFound
         };
-
     }
 }

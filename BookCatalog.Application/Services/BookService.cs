@@ -56,7 +56,12 @@ namespace BookCatalog.Application.Services
 
             foreach (var book in books)
             {
-                var authorName = authors.FirstOrDefault(a => a.ID == book.AuthorID)?.Name;
+                var author = authors.FirstOrDefault(a => a.ID == book.AuthorID);
+                if (author is null)
+                    continue;
+
+                var authorName = author.Name;
+                
                 if (string.IsNullOrWhiteSpace(authorName))
                 {
                     continue; //Just skips over the nameless author instead of throwing or breaking in order to return other book DTOs.
@@ -81,6 +86,28 @@ namespace BookCatalog.Application.Services
 
         }
 
+        public async Task<GetAuthorDetailsResult> GetAuthorDetails(int AuthorId)
+        {
+            //GO OVER AUTHORS TO SEE IF HE EXISTS. IF SO STORE HIS NAME  IF NOT RETURN AUTHOR DOES NOT EXIST
+            //THAN GO OVER BOOKS AND COLLECT ALL THE BOOKS WITH HIS ID IN A LIST.
+
+            var attemptGetAuthors = await _authorRepository.GetAllAuthors();
+
+            var author = attemptGetAuthors.FirstOrDefault(author => author.ID == AuthorId);
+            if (author is null)
+                return GetAuthorDetailsResult.AuthorDoesNotExist();
+
+            var authorName = author.Name;
+            if (string.IsNullOrWhiteSpace(authorName))
+                return GetAuthorDetailsResult.AuthorNameIsEmpty();
+
+            var attemptGetBooks = await _bookRepository.GetAllBooks();
+
+            var filteredBooks = attemptGetBooks.Where(book => book.AuthorID == AuthorId).ToList();
+
+            return GetAuthorDetailsResult.SuccessfullyFoundAuthorDetails(filteredBooks, authorName);
+        }
+
         public async Task<BookServiceResult> GetBooksByAuthor(int authorId)
         {
             //As the lists are small, the simplest way of getting all books by author is just fetch all the lists and work on them
@@ -92,23 +119,28 @@ namespace BookCatalog.Application.Services
 
             foreach (var book in books)
             {
-                if (book.AuthorID == authorId)
+                if (book.AuthorID != authorId)
+                    continue;
+                
+                var author = authors.FirstOrDefault(a => a.ID == authorId);
+                if (author is null)//Should log this as this is wrong, but for simplicity I left it like this
+                    continue;
+
+                var authorName = author.Name;
+                if (string.IsNullOrWhiteSpace(authorName))
+                    continue;
+                else
                 {
-                    var authorName = authors.FirstOrDefault(a => a.ID == authorId)?.Name;
-                    if (string.IsNullOrWhiteSpace(authorName))
-                        continue;
-                    else
+                    BookDto newBookDto = new BookDto()
                     {
-                        BookDto newBookDto = new BookDto()
-                        {
-                            ID = book.ID,
-                            AuthorName = authorName,
-                            Title = book.Title,
-                            PublicationYear = book.PublicationYear
-                        };
-                        booksToReturn.Add(newBookDto);
-                    }
+                        ID = book.ID,
+                        AuthorName = authorName,
+                        Title = book.Title,
+                        PublicationYear = book.PublicationYear
+                    };
+                    booksToReturn.Add(newBookDto);
                 }
+                
             }
 
             if (booksToReturn.Count == 0) 

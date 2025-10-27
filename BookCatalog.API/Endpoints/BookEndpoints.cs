@@ -50,6 +50,17 @@ namespace BookCatalog.API.Endpoints
                     );
             });
 
+            //BONUS TASK (parameter - id) (returns name of the author with nested list of his books)
+            app.MapPost("/api/authors/{id}", async (int id, IBookService bookService) =>
+            {
+                var attemptGetAuthorDetails = await bookService.GetAuthorDetails(id);
+
+                return Results.Json(
+                    attemptGetAuthorDetails.IsSuccess ? attemptGetAuthorDetails.AuthorDetails : attemptGetAuthorDetails.Error,
+                    statusCode: (int)attemptGetAuthorDetails.StatusCode
+                    );
+            });
+
         }
     }
 }
