@@ -16,13 +16,15 @@ namespace BookCatalog.Application.Common.BookService
         public static BookServiceResult SuccessfullyFetchedBooks(List<BookDto> books) => new BookServiceResult(books)
         {
             IsSuccess = true,
-            Message = "Needed books were found."
+            Message = "Needed books were found.",
+            StatusCode = HttpStatusCode.OK
         };
 
         public static BookServiceResult NoBooksFound() => new BookServiceResult(new List<BookDto>())
         {
             IsSuccess = false,
-            Error = "Could not find any books."
+            Error = "Could not find any books.",
+            StatusCode = HttpStatusCode.NotFound
         };
 
     }

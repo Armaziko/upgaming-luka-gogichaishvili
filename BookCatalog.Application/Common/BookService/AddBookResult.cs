@@ -1,4 +1,4 @@
-﻿
+﻿using System.Net;
 using BookCatalog.Domain.Entities;
 
 namespace BookCatalog.Application.Common.BookService
@@ -11,7 +11,8 @@ namespace BookCatalog.Application.Common.BookService
         {
             IsSuccess = true,
             Message = "Successfully added the book. ",
-            Book = book
+            Book = book,
+            StatusCode = HttpStatusCode.Created
         };
     }
 }

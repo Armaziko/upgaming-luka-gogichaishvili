@@ -16,31 +16,38 @@ namespace BookCatalog.API.Endpoints
             {
                 var attemptGetAllBooks = await bookService.GetAllBooksAsync();
 
-                if (!attemptGetAllBooks.IsSuccess)
-                    return Results.BadRequest("Failed to get books. " + attemptGetAllBooks.Error);
-
-                return Results.Ok(attemptGetAllBooks.Books);
+                return Results.Json(
+                    attemptGetAllBooks.IsSuccess ? attemptGetAllBooks.Books : new { error = attemptGetAllBooks.Error },
+                    statusCode: (int)attemptGetAllBooks.StatusCode);
             });
 
             app.MapGet("/api/authors/{id}/books", async (IBookService bookService, int id) =>
             {
                 var attemptGetBooksByAuthor = await bookService.GetBooksByAuthor(id);
-                if (!attemptGetBooksByAuthor.IsSuccess)
-                    return Results.NotFound("Failed to get books. " + attemptGetBooksByAuthor.Error);
 
-                return Results.Ok(attemptGetBooksByAuthor.Books);
+                return Results.Json(
+                    attemptGetBooksByAuthor.IsSuccess ? attemptGetBooksByAuthor.Books : attemptGetBooksByAuthor.Error,
+                    statusCode: (int)attemptGetBooksByAuthor.StatusCode
+                    );
             });
 
             app.MapPost("/api/books", async (CreateBookDto createBookDto, IBookService bookService) =>
             {
                 var attemptAddBook = await bookService.AddBookDto(createBookDto);
-                if (!attemptAddBook.IsSuccess)
-                    return Results.BadRequest("Failed to add the book. " + attemptAddBook.Error);
                 if (attemptAddBook.Book is null)
-                    return Results.BadRequest("Failed to add the book. " + attemptAddBook.Error);
+                    return Results.Problem("Failed to add the book. " + attemptAddBook.Error);
 
-                var newBookId = attemptAddBook.Book.ID;
-                return Results.Created($"/api/books/{newBookId}", attemptAddBook.Book);
+
+                if(attemptAddBook.IsSuccess && (int)attemptAddBook.StatusCode == 201)
+                {
+                    var newBookId = attemptAddBook.Book.ID;
+                    return Results.Created($"/api/books/{newBookId}", attemptAddBook.Book); ;
+                }
+
+                return Results.Json(
+                    attemptAddBook.IsSuccess ? attemptAddBook.Book : attemptAddBook.Error,
+                    statusCode: (int) attemptAddBook.StatusCode
+                    );
             });
 
         }
