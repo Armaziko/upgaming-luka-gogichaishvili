@@ -22,8 +22,8 @@ namespace BookCatalog.Application.Services
         {
 
             var CheckIfValidDTO = _validator.ValidateRequest(createBookDto);
-            if(!CheckIfValidDTO.Result.IsValid)
-                return AddBookResult.
+            if (!CheckIfValidDTO.Result.IsValid)
+                return AddBookResult.InvalidDTO(CheckIfValidDTO.Result.Errors);
 
             var attemptGetBooks = await _bookRepository.GetAllBooks(); //They are needed to check if an id exists before adding a new book
             //Generating a new integer ID that doesn't already exist.
