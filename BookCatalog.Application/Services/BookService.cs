@@ -26,16 +26,12 @@ namespace BookCatalog.Application.Services
                 return AddBookResult.InvalidDTO(CheckIfValidDTO.Result.Errors);
 
             var attemptGetBooks = await _bookRepository.GetAllBooks();
-           
-            int newId = 1; 
-            if(attemptGetBooks.Count != 0)
-            {
-                newId = attemptGetBooks.Max(b => b.ID) + 1;//Adding 1 to the max value in books list makes sure there are no repeating IDs
-            }
+
+            var newBookId = await _bookRepository.GenerateNewId();
 
             Book newBook = new Book()
             {
-                ID = newId,
+                ID = newBookId,
                 AuthorID = createBookDto.AuthorId,
                 PublicationYear = createBookDto.PublicationYear,
                 Title = createBookDto.Title

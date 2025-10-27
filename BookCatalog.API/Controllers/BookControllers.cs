@@ -5,7 +5,7 @@ using BookCatalog.Application.Interfaces;
 
 namespace BookCatalog.API.Endpoints
 {
-    public static class BookEndpoints
+    public static class BookControllers
     {
         public static void MapBookEndpoints(this WebApplication app)
         {

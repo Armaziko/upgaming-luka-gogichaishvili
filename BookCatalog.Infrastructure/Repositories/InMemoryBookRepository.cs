@@ -21,6 +21,17 @@ namespace BookCatalog.Infrastructure.Repositories
             return Task.FromResult(book);
         }
 
+        public Task<int> GenerateNewId() 
+        {
+            int newId = 1; 
+            if (Data.Books.Count != 0)
+            {
+                newId = Data.Books.Max(b => b.ID) + 1;//Adding 1 to the max value in books list makes sure there are no repeating IDs
+            }
+
+            return Task.FromResult(newId);
+        }
+
         public Task<List<Book>> GetAllBooks()
         {
             return Task.FromResult(Data.Books);

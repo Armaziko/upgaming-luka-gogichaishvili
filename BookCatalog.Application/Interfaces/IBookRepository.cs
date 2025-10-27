@@ -8,5 +8,7 @@ namespace BookCatalog.Application.Interfaces
         Task<List<Book>> GetAllBooks();
 
         Task<Book> AddBook(Book book);
+
+        Task<int> GenerateNewId();
     }
 }
