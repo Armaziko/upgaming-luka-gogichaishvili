@@ -1,12 +1,11 @@
 ﻿
-namespace BookCatalog.Domain.Entities
+namespace BookCatalog.Application.DTOs
 {
-    public class Book
+    public class BookDto
     {
         public int ID { get; set; }
         public string Title { get; set; }
-        public int AuthorID { get; set; } // Foreign Key
+        public string AuthorName { get; set; }
         public int PublicationYear { get; set; }
     }
-
 }
